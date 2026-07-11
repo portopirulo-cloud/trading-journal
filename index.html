@@ -46,7 +46,7 @@
       <span class="stat-value" id="pf">—</span>
     </div>
     <div class="stat-card">
-      <span class="stat-label">R promedio</span>
+      <span class="stat-label">P&amp;L promedio</span>
       <span class="stat-value" id="avgR">—</span>
     </div>
     <div class="stat-card">
@@ -92,10 +92,7 @@
           </label>
         </div>
         <div class="field-row">
-          <label>R múltiplo <span class="hint">(+ ganancia, − pérdida)</span>
-            <input id="rr" type="number" step="any" placeholder="2.0" required>
-          </label>
-          <label>Riesgo ($)
+          <label class="full-field">Monto de la operación ($) <span class="hint">(se suma en TP, se resta en SL, no afecta en BE)</span>
             <input id="risk" type="number" step="any" placeholder="50" required>
           </label>
         </div>
@@ -119,7 +116,7 @@
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Fecha</th><th>Activo</th><th>Dir.</th><th>Resultado</th><th>R</th><th>P&amp;L</th><th>Notas</th><th></th></tr>
+            <tr><th>Fecha</th><th>Activo</th><th>Dir.</th><th>Resultado</th><th>P&amp;L</th><th>Notas</th><th></th></tr>
           </thead>
           <tbody id="tbody"></tbody>
         </table>

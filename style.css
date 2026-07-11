@@ -101,6 +101,7 @@ body{
 }
 
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field-row .full-field{grid-column:1 / -1}
 label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:12px}
 .hint{color:var(--text-muted);font-weight:400;font-size:11px}
 input,select,textarea{

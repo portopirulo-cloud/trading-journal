@@ -33,7 +33,8 @@ const els = {
 
 // ---------- Helpers ----------
 const fmtMoney = n => (n < 0 ? '-$' : '$') + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const pnlOf = t => Number(t.risk) * Number(t.rr);
+const resultSign = r => (r === 'TP' ? 1 : r === 'SL' ? -1 : 0);
+const pnlOf = t => resultSign(t.result) * Number(t.risk);
 const todayISO = () => new Date().toISOString().slice(0, 10);
 
 document.getElementById('date').value = todayISO();
@@ -72,7 +73,6 @@ function render() {
       <td>${t.asset}</td>
       <td>${t.direction === 'Compra' ? 'Long' : 'Short'}</td>
       <td><span class="badge badge-${t.result}">${t.result}</span></td>
-      <td class="mono">${Number(t.rr) > 0 ? '+' : ''}${t.rr}R</td>
       <td class="pnl-cell ${pnl > 0 ? 'pos' : pnl < 0 ? 'neg' : ''}">${pnl === 0 ? fmtMoney(0) : fmtMoney(pnl)}</td>
       <td class="notes-cell">${t.notes ? escapeHtml(t.notes) : '—'}</td>
       <td><button class="row-delete" data-id="${t.id}" title="Borrar operación" type="button">✕</button></td>`;
@@ -92,9 +92,9 @@ function render() {
   const grossLoss = Math.abs(trades.filter(t => pnlOf(t) < 0).reduce((s, t) => s + pnlOf(t), 0));
   els.pf.textContent = total ? (grossLoss === 0 ? (grossWin > 0 ? '∞' : '—') : (grossWin / grossLoss).toFixed(2)) : '—';
 
-  const avgRVal = total ? trades.reduce((s, t) => s + Number(t.rr), 0) / total : null;
-  els.avgR.textContent = avgRVal === null ? '—' : (avgRVal > 0 ? '+' : '') + avgRVal.toFixed(2) + 'R';
-  els.avgR.className = 'stat-value' + (avgRVal > 0 ? ' pos' : avgRVal < 0 ? ' neg' : '');
+  const avgPnl = total ? trades.reduce((s, t) => s + pnlOf(t), 0) / total : null;
+  els.avgR.textContent = avgPnl === null ? '—' : (avgPnl >= 0 ? '+' : '') + fmtMoney(avgPnl);
+  els.avgR.className = 'stat-value' + (avgPnl > 0 ? ' pos' : avgPnl < 0 ? ' neg' : '');
 
   let streakCount = 0, streakType = null;
   for (let i = trades.length - 1; i >= 0; i--) {
@@ -211,7 +211,6 @@ els.tradeForm.addEventListener('submit', e => {
     asset: asset.value.trim().toUpperCase(),
     direction: direction.value,
     result: result.value,
-    rr: rr.value,
     risk: risk.value,
     notes: notes.value.trim(),
   });
